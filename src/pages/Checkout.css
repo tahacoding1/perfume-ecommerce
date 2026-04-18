@@ -189,7 +189,7 @@
 
 @media (max-width: 900px) {
   .checkout-container {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
   .checkout-summary {
     position: relative;

@@ -4,19 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { Star, Filter } from 'lucide-react';
 import './Store.css';
 
-const ALL_PRODUCTS = [
-  { id: 1, name: 'Oud Mystique', type: 'OUD', category: 'oud', price: 8500, rating: 5, image: 'https://images.unsplash.com/photo-1590156546946-cb55d8d2315b?auto=format&fit=crop&q=80&w=400' },
-  { id: 2, name: 'Royal Agarwood', type: 'OUD', category: 'oud', price: 10500, rating: 4.9, image: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&q=80&w=400' },
-  { id: 3, name: 'Sandalwood Rose', type: 'ATTAR', category: 'attar', price: 3200, rating: 4.8, image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=400' },
-  { id: 4, name: 'Musk Tahara', type: 'ATTAR', category: 'attar', price: 2800, rating: 4.7, image: 'https://images.unsplash.com/photo-1595532542520-21a473f32420?auto=format&fit=crop&q=80&w=400' },
-  { id: 5, name: 'Citrus Breeze', type: 'UNDER 1500', category: 'under1500', price: 1400, rating: 4.5, image: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=400' },
-  { id: 6, name: 'White Linen', type: 'UNDER 1500', category: 'under1500', price: 1200, rating: 4.2, image: 'https://images.unsplash.com/photo-1605369680376-795a973a4b95?auto=format&fit=crop&q=80&w=400' },
-  { id: 7, name: 'Midnight Bloom', type: 'SIGNATURE', category: 'signature', price: 12000, rating: 4.9, image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&q=80&w=400' },
-  { id: 8, name: 'Amber Wood', type: 'SIGNATURE', category: 'signature', price: 14000, rating: 5.0, image: 'https://images.unsplash.com/photo-1590156546946-cb55d8d2315b?auto=format&fit=crop&q=80&w=400' },
-  { id: 9, name: 'Tester Collection', type: 'TESTER BOX', category: 'tester', price: 4000, rating: 4.6, image: 'https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&q=80&w=400' },
-  { id: 10, name: 'Luxury Gift Set', type: 'GIFT BOX', category: 'giftbox', price: 25000, rating: 5.0, image: 'https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&q=80&w=400' },
-  { id: 11, name: 'Loyalty Exclusive', type: 'MAIN LOYALTY', category: 'loyalty', price: 8000, rating: 4.7, image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&q=80&w=400' }
-];
+import { ALL_PRODUCTS } from '../data/products';
 
 const CATEGORIES = [
   { id: 'all', name: 'All Collection' },
@@ -87,13 +75,16 @@ const Store = () => {
               products.map(product => (
                 <div key={product.id} className="product-card animate-fade-up">
                   <div className="product-img">
-                    <span className="product-badge">{product.type}</span>
-                    <img src={product.image} alt={product.name} />
+                    <Link to={`/product/${product.id}`} className="img-link-wrapper">
+                      <span className="product-badge">{product.type}</span>
+                      <img src={product.image} alt={product.name} />
+                    </Link>
                     <div className="product-overlay">
                       <button className="btn btn-primary" onClick={() => addToCart(product)}>Add to Cart</button>
+                      <Link to={`/product/${product.id}`} className="btn btn-outline btn-slide-fill">View Details</Link>
                     </div>
                   </div>
-                  <div className="product-info">
+                  <Link to={`/product/${product.id}`} className="product-info">
                     <h3>{product.name}</h3>
                     <span className="type">{product.type}</span>
                     <div className="product-meta">
@@ -103,7 +94,7 @@ const Store = () => {
                         <span>{product.rating}</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               ))
             )}

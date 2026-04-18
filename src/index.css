@@ -187,7 +187,8 @@ ul {
 }
 
 .section {
-  padding: 100px 0;
+  padding-top: 100px;
+  padding-bottom: 100px;
   position: relative;
   z-index: 2; /* above noise if needed */
 }

@@ -4,12 +4,10 @@ import { useCart } from '../contexts/CartContext';
 import { ChevronDown, ChevronUp, Star, ArrowRight } from 'lucide-react';
 import './Home.css';
 
-const MOCK_FEATURED = [
-  { id: 1, name: 'Oud Mystique', type: 'OUD', price: 8500, rating: 5, image: 'https://images.unsplash.com/photo-1590156546946-cb55d8d2315b?auto=format&fit=crop&q=80&w=400' },
-  { id: 2, name: 'Sandalwood Rose', type: 'ATTAR', price: 3200, rating: 4.8, image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=400' },
-  { id: 3, name: 'Midnight Bloom', type: 'SIGNATURE', price: 12000, rating: 4.9, image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&q=80&w=400' },
-  { id: 4, name: 'Citrus Breeze', type: 'UNDER 1500RS', price: 1400, rating: 4.5, image: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=400' },
-];
+import { ALL_PRODUCTS } from '../data/products';
+
+// Show top 4 products as featured
+const MOCK_FEATURED = ALL_PRODUCTS.slice(0, 4);
 
 const REVIEWS = [
   { id: 1, text: "The lasting power of their signature collection is unbelievable. Pure luxury.", author: "Ayesha K.", role: "Verified Buyer" },
@@ -99,13 +97,16 @@ const Home = () => {
           {MOCK_FEATURED.map(product => (
             <div key={product.id} className="product-card">
               <div className="product-img">
-                <span className="product-badge">{product.type}</span>
-                <img src={product.image} alt={product.name} />
+                <Link to={`/product/${product.id}`} className="img-link-wrapper">
+                  <span className="product-badge">{product.type}</span>
+                  <img src={product.image} alt={product.name} />
+                </Link>
                 <div className="product-overlay">
                   <button className="btn btn-primary" onClick={() => addToCart(product)}>Add to Cart</button>
+                  <Link to={`/product/${product.id}`} className="btn btn-outline btn-slide-fill">View Details</Link>
                 </div>
               </div>
-              <div className="product-info">
+              <Link to={`/product/${product.id}`} className="product-info">
                 <h3>{product.name}</h3>
                 <span className="type">{product.type}</span>
                 <div className="product-meta">
@@ -115,7 +116,7 @@ const Home = () => {
                     <span>{product.rating}</span>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>

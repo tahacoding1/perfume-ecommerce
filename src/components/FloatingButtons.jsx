@@ -4,18 +4,32 @@ import './FloatingButtons.css';
 
 const FloatingButtons = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [bottomOffset, setBottomOffset] = useState(30);
 
   useEffect(() => {
-    const toggleVisibility = () => {
+    const handleScroll = () => {
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
+
+      const newsletter = document.querySelector('.footer-newsletter');
+      if (newsletter && window.innerWidth <= 640) {
+        const rect = newsletter.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          const overlap = window.innerHeight - rect.top;
+          setBottomOffset(Math.max(30, overlap + 20));
+        } else {
+          setBottomOffset(30);
+        }
+      } else {
+        setBottomOffset(30);
+      }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToTop = () => {
@@ -30,7 +44,7 @@ const FloatingButtons = () => {
   };
 
   return (
-    <div className="floating-container">
+    <div className="floating-container" style={{ bottom: `${bottomOffset}px`, transition: 'bottom 0.1s ease-out' }}>
       <button 
         className={`fab scroll-fab ${isVisible ? 'visible' : ''}`} 
         onClick={scrollToTop}

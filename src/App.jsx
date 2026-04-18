@@ -15,6 +15,7 @@ import { Login, Signup, Profile } from './pages/Auth';
 import Checkout from './pages/Checkout';
 import OrderTrack from './pages/OrderTrack';
 import PolicyPage from './pages/PolicyPage';
+import ProductDetails from './pages/ProductDetails';
 
 const AppLayout = () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ const AppLayout = () => {
           <Route path="/" element={<Home />} />
           <Route path="/store" element={<Store />} />
           <Route path="/store/:category" element={<Store />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
