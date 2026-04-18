@@ -19,23 +19,44 @@ const Checkout = () => {
   const shippingCharges = 250;
   const finalTotal = cartTotal + shippingCharges;
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
     if (cartItems.length === 0) return;
 
-    // Simulate order placement
-    const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-    clearCart();
-    
-    // Pass order details via state to OrderTrack page
-    navigate('/track-order', { 
-      state: { 
-        orderId, 
-        shippingCharges, 
-        total: finalTotal,
-        success: true 
-      } 
-    });
+    const formData = new FormData(e.target);
+    const shipping_details = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      address: formData.get('address'),
+      city: formData.get('city'),
+      phone: formData.get('phone')
+    };
+
+    const payload = {
+      total_price: finalTotal,
+      shipping_details,
+      payment_method: paymentMethod,
+      items: cartItems
+    };
+
+    try {
+      const axios = (await import('axios')).default;
+      const res = await axios.post('http://127.0.0.1:8000/api/orders', payload);
+      clearCart();
+      
+      const orderId = 'ORD-' + res.data.id;
+      navigate('/track-order', { 
+        state: { 
+          orderId, 
+          shippingCharges, 
+          total: finalTotal,
+          success: true 
+        } 
+      });
+    } catch(err) {
+      console.error(err);
+      alert('Failed to place order. Please try again.');
+    }
   };
 
   if (cartItems.length === 0) {
@@ -56,23 +77,23 @@ const Checkout = () => {
             <div className="form-grid">
               <div className="form-group">
                 <label>First Name</label>
-                <input type="text" required />
+                <input type="text" name="firstName" required />
               </div>
               <div className="form-group">
                 <label>Last Name</label>
-                <input type="text" required />
+                <input type="text" name="lastName" required />
               </div>
               <div className="form-group full-width">
                 <label>Address</label>
-                <input type="text" required />
+                <input type="text" name="address" required />
               </div>
               <div className="form-group">
                 <label>City</label>
-                <input type="text" required />
+                <input type="text" name="city" required />
               </div>
               <div className="form-group">
                 <label>Phone Number</label>
-                <input type="tel" required />
+                <input type="tel" name="phone" required />
               </div>
             </div>
           </div>

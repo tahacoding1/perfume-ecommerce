@@ -12,10 +12,10 @@ export const Login = () => {
   const navigate = useNavigate();
   const from = location.state?.from || '/';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    loginUser(email, password);
-    navigate(from, { replace: true });
+    const success = await loginUser(email, password);
+    if (success) navigate(from, { replace: true });
   };
 
   return (
@@ -57,10 +57,10 @@ export const Signup = () => {
   const { registerUser } = useAuth();
   const from = location.state?.from || '/';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    registerUser({ name, email, password });
-    navigate(from, { replace: true });
+    const success = await registerUser({ name, email, password });
+    if (success) navigate(from, { replace: true });
   };
 
   return (
@@ -105,6 +105,23 @@ export const Profile = () => {
   const [address, setAddress] = useState(user?.address || '');
   const navigate = useNavigate();
 
+  const [orders, setOrders] = useState([]);
+
+  React.useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const axios = (await import('axios')).default;
+        const res = await axios.get('http://127.0.0.1:8000/api/user/orders');
+        setOrders(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (user) {
+       fetchOrders();
+    }
+  }, [user]);
+
   if (!user) {
     return <Navigate to="/" replace />;
   }
@@ -148,6 +165,28 @@ export const Profile = () => {
           <button type="submit" className="btn btn-outline w-100 mb-3">Update Details</button>
           <button type="button" className="btn btn-primary w-100" onClick={handleLogout}>Log Out</button>
         </form>
+
+        <div style={{ marginTop: '40px', textAlign: 'left' }}>
+           <h3>Order History</h3>
+           {orders.length === 0 ? (
+             <p>You have no past orders.</p>
+           ) : (
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+               {orders.map(o => (
+                 <div key={o.id} style={{ padding: '15px', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-main)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <strong>Order #ORD-{o.id}</strong>
+                      <span style={{ textTransform: 'uppercase', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', background: o.status === 'delivered' ? 'var(--success-color, green)' : 'var(--primary-color)' }}>{o.status}</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>Total: Rs. {Number(o.total_price).toLocaleString()}</p>
+                    {o.tracking_number && (
+                      <p style={{ margin: '5px 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Tracking: {o.tracking_number}</p>
+                    )}
+                 </div>
+               ))}
+             </div>
+           )}
+        </div>
       </div>
     </div>
   );

@@ -19,9 +19,22 @@ class OrderForm
                     ->required()
                     ->numeric()
                     ->prefix('$'),
-                TextInput::make('status')
+                \Filament\Forms\Components\Select::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                    ])
                     ->required()
                     ->default('pending'),
+                TextInput::make('tracking_number')
+                    ->label('Tracking Number')
+                    ->maxLength(255),
+                Textarea::make('admin_notes')
+                    ->label('Admin Notes')
+                    ->columnSpanFull(),
                 Textarea::make('shipping_address')
                     ->required()
                     ->columnSpanFull(),

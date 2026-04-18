@@ -1,42 +1,30 @@
 <?php
 
-namespace App\Filament\Resources\Orders\Tables;
+namespace App\Filament\Resources\ContactMessages\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class OrdersTable
+class ContactMessagesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('total_price')
-                    ->money()
-                    ->sortable(),
-                \Filament\Tables\Columns\SelectColumn::make('status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'processing' => 'Processing',
-                        'shipped' => 'Shipped',
-                        'delivered' => 'Delivered',
-                        'cancelled' => 'Cancelled',
-                    ])
-                    ->sortable()
+                TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('tracking_number')
-                    ->label('Tracking #')
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('payment_method')
+                TextColumn::make('email')
+                    ->label('Email address')
                     ->searchable(),
+                TextColumn::make('subject')
+                    ->searchable(),
+                IconColumn::make('is_read')
+                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
