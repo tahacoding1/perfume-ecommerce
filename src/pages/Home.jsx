@@ -58,14 +58,30 @@ const Home = () => {
       {/* MARQUEE */}
       <div className="marquee">
         <div className="marquee-track">
+          {/* Set 1 */}
           <span>Oud</span><span className="dot">•</span>
           <span>Attar</span><span className="dot">•</span>
           <span>Signature</span><span className="dot">•</span>
           <span>Loyalty</span><span className="dot">•</span>
           <span>Gift Sets</span><span className="dot">•</span>
+          {/* Set 2 */}
           <span>Oud</span><span className="dot">•</span>
           <span>Attar</span><span className="dot">•</span>
           <span>Signature</span><span className="dot">•</span>
+          <span>Loyalty</span><span className="dot">•</span>
+          <span>Gift Sets</span><span className="dot">•</span>
+          {/* Set 3 */}
+          <span>Oud</span><span className="dot">•</span>
+          <span>Attar</span><span className="dot">•</span>
+          <span>Signature</span><span className="dot">•</span>
+          <span>Loyalty</span><span className="dot">•</span>
+          <span>Gift Sets</span><span className="dot">•</span>
+          {/* Set 4 */}
+          <span>Oud</span><span className="dot">•</span>
+          <span>Attar</span><span className="dot">•</span>
+          <span>Signature</span><span className="dot">•</span>
+          <span>Loyalty</span><span className="dot">•</span>
+          <span>Gift Sets</span><span className="dot">•</span>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -18,6 +19,10 @@ import PolicyPage from './pages/PolicyPage';
 const AppLayout = () => {
   const location = useLocation();
   const hideChrome = ['/login', '/signup'].includes(location.pathname);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <>

@@ -85,6 +85,7 @@
   display: flex;
   gap: 40px;
   white-space: nowrap;
+  width: max-content;
   animation: marquee 20s linear infinite;
 }
 
@@ -152,7 +153,7 @@
 /* PRODUCT GRID */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 30px;
 }
 

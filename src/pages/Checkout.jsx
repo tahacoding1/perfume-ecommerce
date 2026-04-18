@@ -7,7 +7,7 @@ const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cod');
-  const [bankDetails, setBankDetails] = useState({ bank: '', accountName: '', accountNumber: '' });
+  const [bankDetails, setBankDetails] = useState({ bank: '', accountName: '', accountNumber: '', expiryDate: '', cvc: '' });
 
   const shippingCharges = 250;
   const finalTotal = cartTotal + shippingCharges;
@@ -92,9 +92,9 @@ const Checkout = () => {
                         <label>Select Bank</label>
                         <select 
                           required 
+                          className="bank-select"
                           value={bankDetails.bank} 
                           onChange={(e) => setBankDetails({...bankDetails, bank: e.target.value})}
-                          style={{ width: '100%', padding: '12px 16px', border: '1px solid var(--border-color)', background: 'transparent', color: 'var(--text-main)' }}
                         >
                           <option value="">Choose your bank...</option>
                           <option value="Sadapay">Sadapay</option>
@@ -103,26 +103,78 @@ const Checkout = () => {
                           <option value="HBL">HBL</option>
                         </select>
                       </div>
-                      <div className="form-group">
-                        <label>Account Title</label>
-                        <input 
-                          type="text" 
-                          required 
-                          value={bankDetails.accountName} 
-                          onChange={(e) => setBankDetails({...bankDetails, accountName: e.target.value})} 
-                          placeholder="Name on account"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Account Number / IBAN</label>
-                        <input 
-                          type="text" 
-                          required 
-                          value={bankDetails.accountNumber} 
-                          onChange={(e) => setBankDetails({...bankDetails, accountNumber: e.target.value})} 
-                          placeholder="Account No."
-                        />
-                      </div>
+                      
+                      {(bankDetails.bank === 'Easypaisa' || bankDetails.bank === 'Sadapay') && (
+                        <>
+                          <div className="form-group" style={{ marginBottom: '20px' }}>
+                            <label>Account Title</label>
+                            <input 
+                              type="text" 
+                              required 
+                              value={bankDetails.accountName} 
+                              onChange={(e) => setBankDetails({...bankDetails, accountName: e.target.value})} 
+                              placeholder="Name on account"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Account Number</label>
+                            <input 
+                              type="text" 
+                              required 
+                              value={bankDetails.accountNumber} 
+                              onChange={(e) => setBankDetails({...bankDetails, accountNumber: e.target.value})} 
+                              placeholder="03XXXXXXXXX"
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      {(bankDetails.bank === 'HBL' || bankDetails.bank === 'Meezan') && (
+                        <>
+                          <div className="form-group" style={{ marginBottom: '20px' }}>
+                            <label>Card Holder Name</label>
+                            <input 
+                              type="text" 
+                              required 
+                              value={bankDetails.accountName} 
+                              onChange={(e) => setBankDetails({...bankDetails, accountName: e.target.value})} 
+                              placeholder="Name on card"
+                            />
+                          </div>
+                          <div className="form-group" style={{ marginBottom: '20px' }}>
+                            <label>Card Number / IBAN</label>
+                            <input 
+                              type="text" 
+                              required 
+                              value={bankDetails.accountNumber} 
+                              onChange={(e) => setBankDetails({...bankDetails, accountNumber: e.target.value})} 
+                              placeholder="XXXX-XXXX-XXXX-XXXX"
+                            />
+                          </div>
+                          <div className="form-grid">
+                            <div className="form-group">
+                              <label>Expiry Date</label>
+                              <input 
+                                type="text" 
+                                required 
+                                value={bankDetails.expiryDate} 
+                                onChange={(e) => setBankDetails({...bankDetails, expiryDate: e.target.value})} 
+                                placeholder="MM/YY"
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>CVC</label>
+                              <input 
+                                type="text" 
+                                required 
+                                value={bankDetails.cvc} 
+                                onChange={(e) => setBankDetails({...bankDetails, cvc: e.target.value})} 
+                                placeholder="123"
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

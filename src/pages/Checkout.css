@@ -17,6 +17,18 @@
   top: 100px;
 }
 
+.bank-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-main);
+}
+.bank-select option {
+  background: var(--bg-color);
+  color: var(--text-main);
+}
+
 .checkout-section {
   margin-bottom: 60px;
 }
@@ -177,7 +189,12 @@
 
 @media (max-width: 900px) {
   .checkout-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
+  }
+  .checkout-summary {
+    position: relative;
+    top: 0;
+    width: 100%;
   }
   .form-grid {
     grid-template-columns: 1fr;
