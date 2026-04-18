@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import './Checkout.css';
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [bankDetails, setBankDetails] = useState({ bank: '', accountName: '', accountNumber: '', expiryDate: '', cvc: '' });
 

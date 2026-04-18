@@ -15,7 +15,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (userData) => {
+  const loginUser = (email, password) => {
+    const users = JSON.parse(localStorage.getItem('perfume-users') || '[]');
+    const foundUser = users.find(u => u.email === email && u.password === password);
+    const userData = foundUser || { name: email.split('@')[0], email, password };
+    setUser(userData);
+    localStorage.setItem('perfume-user', JSON.stringify(userData));
+  };
+
+  const registerUser = (userData) => {
+    const users = JSON.parse(localStorage.getItem('perfume-users') || '[]');
+    users.push(userData);
+    localStorage.setItem('perfume-users', JSON.stringify(users));
     setUser(userData);
     localStorage.setItem('perfume-user', JSON.stringify(userData));
   };
@@ -29,10 +40,19 @@ export const AuthProvider = ({ children }) => {
     const updatedUser = { ...user, ...newData };
     setUser(updatedUser);
     localStorage.setItem('perfume-user', JSON.stringify(updatedUser));
+
+    const users = JSON.parse(localStorage.getItem('perfume-users') || '[]');
+    const index = users.findIndex(u => u.email === user.email);
+    if (index > -1) {
+      users[index] = updatedUser;
+    } else {
+      users.push(updatedUser);
+    }
+    localStorage.setItem('perfume-users', JSON.stringify(users));
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loginUser, registerUser, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

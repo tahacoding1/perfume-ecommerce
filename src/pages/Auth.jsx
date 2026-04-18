@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { ArrowLeft } from 'lucide-react';
 import './Misc.css';
@@ -7,13 +7,15 @@ import './Misc.css';
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const { loginUser } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const from = location.state?.from || '/';
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login({ name: 'Guest User', email });
-    navigate('/');
+    loginUser(email, password);
+    navigate(from, { replace: true });
   };
 
   return (
@@ -40,7 +42,7 @@ export const Login = () => {
           </div>
           <button type="submit" className="btn btn-primary w-100">Sign In</button>
         </form>
-        <p className="auth-switch">Don't have an account? <Link to="/signup">Register</Link></p>
+        <p className="auth-switch">Don't have an account? <Link to="/signup" state={{ from }}>Register</Link></p>
       </div>
     </div>
   );
@@ -50,12 +52,15 @@ export const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const location = useLocation();
   const navigate = useNavigate();
+  const { registerUser } = useAuth();
+  const from = location.state?.from || '/';
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Simulate signup, redirect to login
-    navigate('/login');
+    registerUser({ name, email, password });
+    navigate(from, { replace: true });
   };
 
   return (
@@ -86,7 +91,7 @@ export const Signup = () => {
           </div>
           <button type="submit" className="btn btn-primary w-100">Register</button>
         </form>
-        <p className="auth-switch">Already have an account? <Link to="/login">Sign In</Link></p>
+        <p className="auth-switch">Already have an account? <Link to="/login" state={{ from }}>Sign In</Link></p>
       </div>
     </div>
   );
@@ -95,16 +100,18 @@ export const Signup = () => {
 export const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
   const [name, setName] = useState(user?.name || '');
+  const [password, setPassword] = useState(user?.password || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [address, setAddress] = useState(user?.address || '');
   const navigate = useNavigate();
 
   if (!user) {
-    navigate('/login');
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    updateProfile({ name });
+    updateProfile({ name, password, phone, address });
     alert("Profile Updated Successfully!");
   };
 
@@ -125,6 +132,18 @@ export const Profile = () => {
           <div className="form-group">
             <label>Email</label>
             <input type="email" value={user.email} disabled />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Phone Number (Optional)</label>
+            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03XXXXXXXXX" />
+          </div>
+          <div className="form-group">
+            <label>Home Address (Optional)</label>
+            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Enter details..." />
           </div>
           <button type="submit" className="btn btn-outline w-100 mb-3">Update Details</button>
           <button type="button" className="btn btn-primary w-100" onClick={handleLogout}>Log Out</button>

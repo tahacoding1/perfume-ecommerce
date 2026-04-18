@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -10,9 +10,15 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { cartCount, setIsCartOpen } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,7 +73,13 @@ const Navbar = () => {
                   <div className="dropdown-menu">
                     <Link to="/profile">Settings</Link>
                     <Link to="/order-track">Orders</Link>
-                    <Link to="/profile">Logout</Link>
+                    <button onClick={handleLogout} className="logout-btn-nav" style={{ 
+                      background: 'none', border: 'none', padding: '10px 20px', 
+                      textAlign: 'left', width: '100%', cursor: 'pointer', 
+                      fontFamily: 'inherit', color: 'inherit', fontSize: '13px'
+                    }}>
+                      Logout
+                    </button>
                   </div>
                 </div>
               ) : (
