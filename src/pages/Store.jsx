@@ -4,7 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { Star, Filter } from 'lucide-react';
 import './Store.css';
 
-import { ALL_PRODUCTS } from '../data/products';
+
 
 const CATEGORIES = [
   { id: 'all', name: 'All Collection' },
@@ -21,19 +21,43 @@ const Store = () => {
   const { category } = useParams();
   const { addToCart } = useCart();
   const [activeCat, setActiveCat] = useState('all');
-  const [products, setProducts] = useState(ALL_PRODUCTS);
+  const [products, setProducts] = useState([]);
+  const [allFetchedProducts, setAllFetchedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const catToSet = category || 'all';
     setActiveCat(catToSet);
     
-    if (catToSet === 'all') {
-      setProducts(ALL_PRODUCTS);
+    // Fetch once
+    if (allFetchedProducts.length === 0) {
+      import('axios').then(axios => {
+        axios.default.get('http://127.0.0.1:8000/api/products')
+          .then(res => {
+            const data = res.data;
+            setAllFetchedProducts(data);
+            if (catToSet === 'all') {
+              setProducts(data);
+            } else {
+              setProducts(data.filter(p => p.category === catToSet));
+            }
+            setLoading(false);
+          })
+          .catch(err => {
+            console.error("Failed to load products from API", err);
+            setLoading(false);
+          });
+      });
     } else {
-      setProducts(ALL_PRODUCTS.filter(p => p.category === catToSet));
+      // Filter existing
+      if (catToSet === 'all') {
+        setProducts(allFetchedProducts);
+      } else {
+        setProducts(allFetchedProducts.filter(p => p.category === catToSet));
+      }
     }
-  }, [category]);
+  }, [category, allFetchedProducts]);
 
   return (
     <div className="store-page page-padding">

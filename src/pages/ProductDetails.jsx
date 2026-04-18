@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { ShieldCheck, Truck, RotateCcw, Star } from 'lucide-react';
-import { ALL_PRODUCTS } from '../data/products';
+
 import './ProductDetails.css';
 
 const ProductDetails = () => {
@@ -14,15 +14,18 @@ const ProductDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const foundProduct = ALL_PRODUCTS.find(p => p.id === parseInt(id));
-    if (foundProduct) {
-      setProduct(foundProduct);
-      
-      // Get 4 random products excluding this one
-      const others = ALL_PRODUCTS.filter(p => p.id !== foundProduct.id);
-      const shuffled = [...others].sort(() => 0.5 - Math.random());
-      setSuggestedProducts(shuffled.slice(0, 4));
-    }
+    import('axios').then(axios => {
+      axios.default.get(`http://127.0.0.1:8000/api/products/${id}`)
+        .then(res => setProduct(res.data))
+        .catch(err => console.error(err));
+
+      axios.default.get(`http://127.0.0.1:8000/api/products`)
+        .then(res => {
+          const others = res.data.filter(p => p.id !== parseInt(id));
+          const shuffled = [...others].sort(() => 0.5 - Math.random());
+          setSuggestedProducts(shuffled.slice(0, 4));
+        });
+    });
   }, [id]);
 
   if (!product) {

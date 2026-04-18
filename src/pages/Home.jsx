@@ -4,32 +4,34 @@ import { useCart } from '../contexts/CartContext';
 import { ChevronDown, ChevronUp, Star, ArrowRight } from 'lucide-react';
 import './Home.css';
 
-import { ALL_PRODUCTS } from '../data/products';
 
-// Show top 4 products as featured
-const MOCK_FEATURED = ALL_PRODUCTS.slice(0, 4);
-
-const REVIEWS = [
-  { id: 1, text: "The lasting power of their signature collection is unbelievable. Pure luxury.", author: "Ayesha K.", role: "Verified Buyer" },
-  { id: 2, text: "Finally found my perfect everyday scent without breaking the bank.", author: "Ali M.", role: "Verified Buyer" },
-  { id: 3, text: "Their oud is authentic and rich, exactly what I was looking for.", author: "Zainab T.", role: "Verified Buyer" },
-  { id: 4, text: "Beautiful packaging and incredible fragrances. The perfect gift.", author: "Hassan R.", role: "Verified Buyer" }
-];
-
-const FAQS = [
-  { question: "How long do your perfumes last?", answer: "Our signature and oud collections are formulated as Extrait de Parfum and last anywhere from 12-24 hours on skin, and even longer on clothes." },
-  { question: "Are your ingredients cruelty-free?", answer: "Yes, all our ingredients are ethically sourced and 100% cruelty-free. We do not test on animals." },
-  { question: "What is your return policy?", answer: "We offer a 7-day return policy for sealed, unopened products. Please note that tester boxes are final sale." },
-  { question: "Do you offer international shipping?", answer: "Currently, we only ship nationwide within Pakistan, but we are expanding internationally soon!" }
-];
 
 const Home = () => {
   const { addToCart } = useCart();
   const [openFaq, setOpenFaq] = useState(null);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+
+  React.useEffect(() => {
+    import('axios').then(axios => {
+      axios.default.get('http://127.0.0.1:8000/api/products')
+        .then(res => setFeaturedProducts(res.data.slice(0, 4)));
+
+      axios.default.get('http://127.0.0.1:8000/api/reviews')
+        .then(res => setReviews(res.data));
+    });
+  }, []);
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
   };
+
+  const FAQS = [
+    { question: "How long do your perfumes last?", answer: "Our signature and oud collections are formulated as Extrait de Parfum and last anywhere from 12-24 hours on skin, and even longer on clothes." },
+    { question: "Are your ingredients cruelty-free?", answer: "Yes, all our ingredients are ethically sourced and 100% cruelty-free. We do not test on animals." },
+    { question: "What is your return policy?", answer: "We offer a 7-day return policy for sealed, unopened products. Please note that tester boxes are final sale." },
+    { question: "Do you offer international shipping?", answer: "Currently, we only ship nationwide within Pakistan, but we are expanding internationally soon!" }
+  ];
 
   return (
     <div className="home-page">
@@ -94,7 +96,7 @@ const Home = () => {
         </div>
 
         <div className="product-grid">
-          {MOCK_FEATURED.map(product => (
+          {featuredProducts.map(product => (
             <div key={product.id} className="product-card">
               <div className="product-img">
                 <Link to={`/product/${product.id}`} className="img-link-wrapper">
@@ -168,23 +170,27 @@ const Home = () => {
       <section className="section reviews-section">
         <div className="container">
           <h2 className="section-title text-center mb-5">Words from <em>Connoisseurs</em></h2>
-          <div className="reviews-carousel">
-            <div className="reviews-track">
-              {/* Double array for infinite scroll effect */}
-              {[...REVIEWS, ...REVIEWS].map((review, idx) => (
-                <div key={idx} className="review-card">
-                  <div className="stars">
-                    {[1,2,3,4,5].map(i => <Star key={i} size={16} fill="currentColor" />)}
+          {reviews.length > 0 ? (
+            <div className="reviews-carousel">
+              <div className="reviews-track">
+                {/* Double array for infinite scroll effect */}
+                {[...reviews, ...reviews].map((review, idx) => (
+                  <div key={idx} className="review-card">
+                    <div className="stars">
+                      {[1,2,3,4,5].map(i => <Star key={i} size={16} fill={i <= review.rating ? "currentColor" : "none"} />)}
+                    </div>
+                    <p className="review-text">"{review.content}"</p>
+                    <div className="review-author">
+                      <h4>{review.author}</h4>
+                      <span>Verified Buyer</span>
+                    </div>
                   </div>
-                  <p className="review-text">"{review.text}"</p>
-                  <div className="review-author">
-                    <h4>{review.author}</h4>
-                    <span>{review.role}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <p className="text-center" style={{ color: 'var(--text-color)' }}>Loading reviews...</p>
+          )}
         </div>
       </section>
 
